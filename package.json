@@ -1,0 +1,16 @@
+{
+  "name": "smart-trip-ai",
+  "version": "1.0.0",
+  "description": "Real-Time Tourist Crowd Predictor + Smart Itinerary Replanner",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install && cd ../ml-models && pip install -r requirements.txt",
+    "backend": "cd backend && npm run dev",
+    "frontend": "cd frontend && npm start",
+    "ml": "cd ml-models && python app.py",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\" \"npm run ml\" --names \"BACKEND,FRONTEND,ML-MODEL\" --prefix-colors \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\"",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\" \"npm run ml\" --names \"BACKEND,FRONTEND,ML-MODEL\" --prefix-colors \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

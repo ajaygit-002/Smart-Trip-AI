@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FiBell, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
-import { api } from '../utils/api';
+import React, { useState, useEffect } from "react";
+import { FiBell, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
+import { api } from "../utils/api";
 
 const NotificationPanel = ({ userId }) => {
   const [notifications, setNotifications] = useState([]);
@@ -8,31 +8,35 @@ const NotificationPanel = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    fetchNotifications();
-    fetchUnreadCount();
-
-    const interval = setInterval(() => {
+    if (userId) {
+      fetchNotifications();
       fetchUnreadCount();
-    }, 5000);
 
-    return () => clearInterval(interval);
+      const interval = setInterval(() => {
+        fetchUnreadCount();
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
   }, [userId]);
 
   const fetchNotifications = async () => {
     try {
       const data = await api.getUserNotifications(userId, 10);
-      setNotifications(data.notifications);
+      setNotifications(data?.notifications || []);
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      console.error("Error fetching notifications:", error);
+      setNotifications([]);
     }
   };
 
   const fetchUnreadCount = async () => {
     try {
       const data = await api.getUnreadCount(userId);
-      setUnreadCount(data.unreadCount);
+      setUnreadCount(data?.unreadCount || 0);
     } catch (error) {
-      console.error('Error fetching unread count:', error);
+      console.error("Error fetching unread count:", error);
+      setUnreadCount(0);
     }
   };
 
@@ -42,17 +46,17 @@ const NotificationPanel = ({ userId }) => {
       fetchNotifications();
       fetchUnreadCount();
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      console.error("Error marking notification as read:", error);
     }
   };
 
   const getNotificationIcon = (type) => {
     switch (type) {
-      case 'crowd-alert':
+      case "crowd-alert":
         return <FiAlertCircle className="text-red-500" />;
-      case 'best-time':
+      case "best-time":
         return <FiCheckCircle className="text-green-500" />;
-      case 'itinerary-update':
+      case "itinerary-update":
         return <FiCheckCircle className="text-blue-500" />;
       default:
         return <FiBell />;
@@ -84,12 +88,16 @@ const NotificationPanel = ({ userId }) => {
                 <div
                   key={notif._id}
                   className={`p-3 mb-2 rounded-lg border-l-4 cursor-pointer ${
-                    notif.read ? 'bg-gray-50 border-gray-200' : 'bg-blue-50 border-blue-400'
+                    notif.read
+                      ? "bg-gray-50 border-gray-200"
+                      : "bg-blue-50 border-blue-400"
                   }`}
                   onClick={() => !notif.read && handleMarkAsRead(notif._id)}
                 >
                   <div className="flex items-start gap-2">
-                    <div className="mt-1">{getNotificationIcon(notif.type)}</div>
+                    <div className="mt-1">
+                      {getNotificationIcon(notif.type)}
+                    </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">{notif.message}</p>
                       <p className="text-xs text-gray-500 mt-1">
