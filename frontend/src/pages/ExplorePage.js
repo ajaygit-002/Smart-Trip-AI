@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
-import { FiFilter, FiSearch } from 'react-icons/fi';
-import PlaceCard from '../components/PlaceCard';
-import CrowdIndicator from '../components/CrowdIndicator';
-import { api } from '../utils/api';
+import React, { useState, useEffect } from "react";
+import { useParams, useLocation, Link } from "react-router-dom";
+import { FiFilter, FiSearch, FiMap } from "react-icons/fi";
+import PlaceCard from "../components/PlaceCard";
+import CrowdIndicator from "../components/CrowdIndicator";
+import { api } from "../utils/api";
 
 const ExplorePage = () => {
   const { city } = useParams();
   const location = useLocation();
   const [places, setPlaces] = useState([]);
   const [filteredPlaces, setFilteredPlaces] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [crowdData, setCrowdData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const categories = [
-    'All',
-    'Monument',
-    'Beach',
-    'Park',
-    'Museum',
-    'Temple',
-    'Market',
-    'Food'
+    "All",
+    "Monument",
+    "Beach",
+    "Park",
+    "Museum",
+    "Temple",
+    "Market",
+    "Food",
   ];
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const ExplorePage = () => {
         setSelectedPlace(data[0]);
       }
     } catch (error) {
-      console.error('Error fetching places:', error);
+      console.error("Error fetching places:", error);
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ const ExplorePage = () => {
   const filterPlaces = () => {
     let filtered = places;
 
-    if (selectedCategory !== 'All') {
+    if (selectedCategory !== "All") {
       filtered = filtered.filter((p) => p.category === selectedCategory);
     }
 
@@ -77,7 +77,7 @@ const ExplorePage = () => {
       const data = await api.predictCrowd(placeId, new Date().toISOString());
       setCrowdData(data);
     } catch (error) {
-      console.error('Error fetching crowd data:', error);
+      console.error("Error fetching crowd data:", error);
     }
   };
 
@@ -92,7 +92,17 @@ const ExplorePage = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-4xl font-bold mb-2">Explore {city}</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-4xl font-bold">Explore {city}</h1>
+          <Link
+            to={`/map/${city}`}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            title="View on map"
+          >
+            <FiMap size={20} />
+            Map View
+          </Link>
+        </div>
         <p className="text-gray-600 mb-8">
           {places.length} tourist places found
         </p>
@@ -125,8 +135,8 @@ const ExplorePage = () => {
                       onClick={() => setSelectedCategory(cat)}
                       className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
                         selectedCategory === cat
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-100'
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-gray-700 hover:bg-gray-100"
                       }`}
                     >
                       {cat}
@@ -138,7 +148,9 @@ const ExplorePage = () => {
               {/* Selected Place Details */}
               {selectedPlace && (
                 <div className="bg-white rounded-lg shadow-lg p-6">
-                  <h3 className="text-xl font-bold mb-4">{selectedPlace.name}</h3>
+                  <h3 className="text-xl font-bold mb-4">
+                    {selectedPlace.name}
+                  </h3>
 
                   {crowdData && (
                     <div className="mb-6">
@@ -151,19 +163,19 @@ const ExplorePage = () => {
 
                   <div className="space-y-2 text-sm">
                     <p>
-                      <span className="font-medium">Category:</span>{' '}
+                      <span className="font-medium">Category:</span>{" "}
                       {selectedPlace.category}
                     </p>
                     <p>
-                      <span className="font-medium">Open:</span>{' '}
+                      <span className="font-medium">Open:</span>{" "}
                       {selectedPlace.openTime} - {selectedPlace.closeTime}
                     </p>
                     <p>
-                      <span className="font-medium">Avg Visit:</span>{' '}
+                      <span className="font-medium">Avg Visit:</span>{" "}
                       {selectedPlace.avgVisitDuration} mins
                     </p>
                     <p>
-                      <span className="font-medium">Rating:</span>{' '}
+                      <span className="font-medium">Rating:</span>{" "}
                       {selectedPlace.rating.toFixed(1)} ⭐
                     </p>
                     {selectedPlace.entryFee && (

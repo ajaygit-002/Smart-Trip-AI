@@ -8,6 +8,7 @@ import {
 import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
 import HomePage from "./pages/HomePage";
 import ExplorePage from "./pages/ExplorePage";
+import MapViewPage from "./pages/MapViewPage";
 import ItineraryPage from "./pages/ItineraryPage";
 import AuthPage from "./pages/AuthPage";
 import NotificationPanel from "./components/NotificationPanel";
@@ -144,6 +145,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ExplorePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/map/:city"
+            element={
+              <ProtectedRoute>
+                <MapViewPage />
               </ProtectedRoute>
             }
           />
